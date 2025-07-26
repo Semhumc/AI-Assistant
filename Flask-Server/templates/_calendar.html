@@ -1,0 +1,18 @@
+<!-- Takvim -->
+<div class="calendar-container">
+  {% if has_google_auth %}
+    <iframe 
+      src="https://calendar.google.com/calendar/embed?src={{ encoded_email }}&ctz=Europe%2FIstanbul" 
+      frameborder="0" 
+      style="border:0;" 
+      allowfullscreen>
+    </iframe>
+  {% else %}
+    <div class="connect-calendar-wrapper">
+        <p>Connect your Google Calendar to see your events.</p>
+        <a href="{{ url_for('connect_calendar') }}" class="connect-calendar-button">
+            Connect Google Calendar
+        </a>
+    </div>
+  {% endif %}
+</div> 

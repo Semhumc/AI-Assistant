@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Chat Interface</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* MAIN alanındaki tablo için stil */
+.main {
+   background-color: transparent !important;
+  flex-grow: 1;
+  padding: 20px;
+  margin: 40px auto;
+  width: 85%;
+  max-width: 800px;
+  border-radius: 10px;
+  height: calc(80vh - 50px);
+  margin-left: 370px;  /* Left sidebar genişliği + boşluk */
+  margin-right: 130px; /* Right sidebar genişliği + boşluk */
+  box-sizing: border-box;
+  transition: margin 0.3s ease;
+  
+}
+/* Responsive: Ekran 900px altı olduğunda */
+@media (max-width: 900px) {
+  .main {
+    margin-left: 0;  /* Sidebarlar gizleniyor, boşluk kaldır */
+     margin-left:0;
+    margin-right: 0;
+    height: calc(80vh - 50px); /* Üstteki fixed top-buttons boşluğu */
+    border-radius: 15px;
+    padding: 10px 10px;
+  }
+}
+
+.main table {
+  background: white;
+  width: 100%;
+  border-radius: 10px;
+  border-collapse: separate; /* collapse yerine separate */
+  border-spacing: 0; /* Hücreler arası boşluk kaldırılır */
+  overflow: hidden; /* Taşmaları gizler */
+  font-family: Arial, sans-serif;
+}
+/* Tablo hücreleri */
+.main th, .main td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.95rem;
+  color: #333;
+  text-align: left;
+}
+
+/* Başlık arka planı */
+.main th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+}
+
+/* Son sütun sağa yaslı */
+.main th:last-child,
+.main td:last-child {
+  text-align: right;
+}
+
+/* Butonlar */
+.btn {
+  padding: 6px 12px;
+  margin-left: 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn.update {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn.update:hover {
+  background-color: #45a049;
+}
+
+.btn.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn.delete:hover {
+  background-color: #da190b;
+}
+
+
+  </style>
+</head>
+<body>
+<!-- Üstte toggle butonları -->
+<div class="top-buttons">
+  <button id="toggleLeftBtn">☰ </button>
+  <button id="toggleRightBtn">👤 </button>
+</div>
+
+<div class="container">
+
+  <!-- LEFT - Sidebar -->
+  <nav class="left">
+    <div class="top-section">
+    <!-- Chat kutusu -->
+  <div class="chat-box">
+    <h3>Chat</h3>
+    <a href="{{ url_for('home') }}" class="chat"style="color: white;">
+      💬  <strong>New Chat</strong>
+    </a>
+  </div>
+  <!-- Duyurular Kutusu -->
+  <div class="announcements-box">
+     <h3>Announcements</h3>
+  <a href="{{ url_for('announcements') }}" class="announcement"style="color: white;">
+      {% if announcements %}
+        {% set last = announcements[0] %}
+        <div class="announcement-item">
+          <div class="announcement-header">
+            <span class="icon">📢</span>
+            <strong>{{ last.sender }}</strong>
+          </div>
+          <div class="announcement-content">
+            {{ last.content }}
+          </div>
+        </div>
+      {% else %}
+        <p>No Announcements.</p>
+      {% endif %}
+    </a>
+  </div>
+
+  <div class="app-buttons">
+    <a href="https://mail.google.com/" target="_blank" style="display: inline-block;">
+    <img src="https://img.icons8.com/color/28/gmail-new.png" alt="Gmail" style="width: 28px; height: 28px;" />
+  </a>
+    <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
+      <img src="https://img.icons8.com/color/48/linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://www.notion.so" target="_blank" title="Notion">
+      <img src="https://img.icons8.com/ios-filled/50/000000/notion.png" alt="Notion">
+    </a>
+    <a href="https://drive.google.com" target="_blank" title="Google Drive">
+      <img src="https://img.icons8.com/color/48/google-drive--v1.png" alt="Google Drive">
+    </a>
+    <a href="https://slack.com/" target="_blank">
+    <img src="https://img.icons8.com/color/48/slack-new.png" alt="Slack" />
+  </a>
+  </div>
+
+  {% include '_calendar.html' %}
+  </div>
+</nav>
+
+<!-- MAIN - Chat alanı -->
+  <div class="main">  
+
+     <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Groups</th>
+                    <th>Actions</th> <!-- Eklendi -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.groups | join(', ') }}</td>
+                    <td>
+                        <!-- Sil Butonu -->
+                        <form action="{{ url_for('delete_user', username=user.username) }}" method="POST" style="display:inline;">
+                            <button type="submit" onclick="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?')" class="btn delete">Delete</button>
+                        </form>
+                        <!-- Güncelle Butonu -->
+                        <form action="{{ url_for('edit_user', username=user.username) }}" method="GET" style="display:inline;">
+                            <button type="submit" class="btn update">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+ <!-- RIGHT - Popuplar -->
+ <div class="right">
+
+  <div class="popup-toggle-container">
+    <button class="icon-button" onclick="togglePopup('notificationsPopup')">ℹ️</button>
+    <button class="icon-button" onclick="togglePopup('profilePopup')">👤</button>
+  </div>
+
+  <div id="notificationsPopup" class="popup">
+    <h4>Need Help?</h4>
+    <h5>If you have any problem you can send us email.</h5>
+    <p>ssbtech@gmail.com</p>
+  </div>
+
+
+  <div id="profilePopup" class="popup">
+  <div class="popup-content">
+    <div class="profile-info">
+      <span class="icon">👤</span>
+      <span class="info-text">{{ user.get('given_name', 'Misafir') }} {{ user.get('family_name', '') }}</span>
+    </div>
+    <div class="profile-info no-icon">
+      <ul class="info-text">
+        {% for group in user.groups %}
+          <li>{{ group }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="profile-info no-icon">
+      <span class="info-text">{{ user.get('email', 'Misafir') }}</span>
+    </div>
+    <form action="{{ url_for('profile') }}" method="get" style="display: block;">
+      <button type="submit" class="popup-button">See Profile</button>
+    </form>
+
+    {% if can_do_Register %}
+      <form action="{{ url_for('register') }}" method="get" style="display: block;">
+        <button type="submit" class="popup-button">Add Employee</button>
+      </form>
+      <form action="{{ url_for('all_users') }}" method="get" style="display: block;">
+        <button type="submit" class="popup-button">List of Employees</button>
+      </form>
+    {% endif %}
+    
+    <form action="{{ url_for('logout') }}" method="get" style="display: block;">
+      <button type="submit" class="popup-button logout">Logout</button>
+    </form>
+  </div>
+</div>
+
+</div>
+
+<script src="{{ url_for('static', filename='scripts/popup.js') }}"></script>
+
+  
+
+</body>
+</html>

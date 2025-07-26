@@ -1,0 +1,43 @@
+
+services:
+  flask-app:
+    build: .
+    ports:
+      - "5000:5000"
+    container_name: my_flask_app
+    environment:
+      SMTP_SERVER: ${SMTP_SERVER}
+      SMTP_PORT: ${SMTP_PORT}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      KEYCLOAK_SERVER_URL: ${KEYCLOAK_SERVER_URL}
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+      REALM_NAME: ${REALM_NAME}
+    restart: unless-stopped
+    volumes:
+      - ./server.py:/app/server.py
+      - ./user_conversations:/app/user_conversations
+    networks:
+      - keycloak_network
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: my_ngrok_tunnel
+    network_mode: "host"
+    stdin_open: true
+    tty: true
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    command:
+      - "http"
+      - "--url=up-sadly-beetle.ngrok-free.app"
+      - "5000"
+    depends_on:
+      - flask-app
+    restart: unless-stopped
+
+networks:
+  keycloak_network:
+    name: keycloak_network
+    driver: bridge
+    external: true

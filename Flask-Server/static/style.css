@@ -1,0 +1,464 @@
+/* Temel */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  html, body {
+    overflow-x: hidden;
+    height: 100%;
+  }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(
+      315deg,
+      #d9a6a2 0%,
+      #a55d64 10%,
+      #6d284c 25%,
+      #3f3a75 55%,
+      #100b36 100%
+    );
+    min-height: 100vh;
+    margin: 0;
+  }
+  .top-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+  /* ÜSTTEKİ TUŞLAR */
+  .top-buttons {
+  position: fixed;
+  top: 10px;
+  left: 0;
+  right: 0;
+  padding: 0 15px;
+  z-index: 1000;
+  display: none; /* Küçük ekranda göstereceğiz */
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+/* Buton stilleri */
+.top-buttons button {
+  padding: 10px 15px;
+  border-radius: 25px;
+  border: none;
+  background-color: #3f3a75;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+  transition: background-color 0.3s ease;
+}
+
+.top-buttons button:hover {
+  background-color: #6d284c;
+}
+
+/* Küçük ekranlarda göster */
+@media (max-width: 768px) {
+  .top-buttons {
+    display: flex;
+  }
+}
+
+
+  /* Ana container */
+  .container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    gap: 15px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    transition: padding-top 0.3s ease;
+    padding-top: 50px; /* Üst tuşlar için boşluk */
+  }
+
+/* LEFT - Sidebar */
+.left {
+  position: fixed;      /* Ekrana sabit */
+  top: 0;              /* En üstten başlasın */
+  left: 0;
+  width: 350px;
+  height: 100vh;       /* Tam yükseklik */
+  background-color: transparent !important;
+  color: white;
+  padding: 10px;
+  padding-top: 40px;
+  overflow-y: auto;
+   box-shadow: none !important;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.left.hidden {
+  transform: translateX(-120%);
+}
+
+/* Kutuları saran bölüm */
+.top-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-grow: 1;
+}
+
+/* Ortak kutu stilleri */
+.announcements-box,
+.chat-box {
+  background-color: #2a234a;
+  padding: 15px;
+  border-radius: 10px;
+  color: white !important;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+ /* Butonların yer aldığı alan */
+.app-buttons {
+  display: flex;
+  
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  background-color: #2a234a;
+  padding: 15px;
+  border-radius: 10px;
+  color: white;
+  display: flex;
+   gap: 1px;
+  overflow-y: auto;
+}
+
+/* Buton ikonları */
+.app-buttons a img {
+  width: 40px;
+  height: 40px;
+ 
+  transition: transform 0.2s ease;
+}
+
+.app-buttons a img:hover {
+  transform: scale(1.1);
+}
+/* Boyut farkları */
+.app-buttons,
+.meetings-box {
+  flex-grow: 1.5;
+   min-height: 50px;
+  max-height: 100px;
+}
+
+.chat-box {
+  flex-grow: 0.5;
+    min-height: 60px;
+  max-height: 80px;
+}
+
+
+/* Takvim en alta sabit */
+.calendar-container {
+  background-color: #2a234a;
+  border-radius: 10px;
+  min-height: 300px;
+  height: auto;
+  overflow: hidden;
+   margin-top: 5px;
+  padding: 0;
+}
+
+.calendar-container iframe {
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Başlıklar */
+.announcements-box h3,
+.meetings-box h3 {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: white;
+}
+
+/* İçerikler */
+.announcement-item,
+.announcement-content,
+.meeting,
+.chat-box {
+  font-size: 0.85rem;
+  color: white;
+}
+
+
+  /* Right navbar tamamen saydam, renksiz */
+.right {
+  position: fixed;
+  top: 0;             /* En üstten başlasın */
+  right: 20px;        /* Soldaki sidebar ile arada mesafe kalsın */
+  width: 200px;
+  height: 100vh;      /* Tam yükseklik */
+  background-color: transparent !important;
+  color: white;
+  padding: 60px 20px 20px 20px;
+  border-radius: 15px;
+  box-shadow: none !important;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 1000;
+}
+
+  /* Popuplar yan yana ve yuvarlak kutular */
+  .popup {
+    background: rgba(42, 35, 74, 0.9);
+    border-radius: 50px;
+    padding: 15px 25px;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 130px;
+    max-width: 180px;
+  }
+  .popup.show {
+    display: flex;
+  }
+  .popup h4 {
+    margin-bottom: 10px;
+    color: #a55d64;
+  }
+  .popup p {
+    line-height: 1.3;
+  }
+
+  /* Popup container - butonların altında açılması için */
+.popup-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px; /* Butonlarla popup arası boşluk */
+  position: relative;
+  z-index: 5;
+}
+
+/* Popup ikonları için kapsayıcı */
+.popup-toggle-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 20;
+}
+
+.icon-button {
+  background: linear-gradient(145deg, #8a8a8a, #6a6a6a);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: inset 2px 2px 5px rgba(255, 255, 255, 0.3),
+              inset -2px -2px 5px rgba(0, 0, 0, 0.4);
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button:hover {
+  background: linear-gradient(145deg, #a0a0a0, #7a7a7a);
+  box-shadow: inset 3px 3px 7px rgba(255, 255, 255, 0.5),
+              inset -3px -3px 7px rgba(0, 0, 0, 0.6),
+              0 0 8px rgba(170, 170, 170, 0.7);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* İkon butonları */
+.popup-toggle-btn {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(63, 58, 117, 0.7);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+.popup-toggle-btn:hover {
+  background-color: rgba(109, 40, 76, 0.8);
+}
+
+/* Popup içerik */
+.popup {
+  background: white !important;
+  color: #100b36 !important;
+  border-radius: 12px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  display: none;
+  position: relative;
+  margin-top: 10px;
+  z-index: 10;
+}
+.profile-info {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  gap: 8px; /* İkon ile metin arası boşluk */
+}
+
+.profile-info:last-of-type {
+  border-bottom: none;
+}
+
+.icon {
+  font-size: 18px;
+  width: 22px; /* İkon alanı sabit, hizalamak için */
+  text-align: center;
+  color: #555;
+}
+
+.info-text {
+  color: #222;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+
+
+.popup-button {
+  width: 100%;
+  padding: 8px 0;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #3f3a75;
+  color: white;
+  transition: background 0.3s;
+}
+
+.popup-button:hover {
+  background-color: #2e2a5c;
+}
+
+.popup-button.logout {
+  background-color: #a94442;
+}
+
+.popup-button.logout:hover {
+  background-color: #922d2b;
+}
+
+.logout-button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #a55d64;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #6d284c;
+}
+
+
+.popup.show {
+  display: block;
+}
+  /* Responsive */
+  @media (max-width: 900px) {
+    /* Üst tuşları göster */
+    .top-buttons {
+      display: flex;
+    }
+    .container {
+      padding: 70px 20px 20px 20px; /* Üst boşluk biraz artırıldı */
+    }
+    /* LEFT ve RIGHT gizle */
+    .left.hidden, .right.hidden {
+      transform: translateX(0); /* Eğer zaten hidden değilse burada transform sıfırlanıyor */
+    }
+    .left {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      width: 280px;
+      height: calc(100vh - 50px);
+      z-index: 999;
+      box-shadow: 3px 0 15px rgba(0,0,0,0.6);
+      background-color: rgba(16,11,54,0.7);
+      transition: transform 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+    .left.hidden {
+      transform: translateX(-120%);
+    }
+    .right {
+      position: fixed;
+      top: 50px;
+      right: 0;
+      width: 180px;
+      height: calc(100vh - 50px);
+      z-index: 999;
+      box-shadow: -3px 0 15px rgba(0,0,0,0.6);
+      background-color: rgba(16,11,54,0.7);
+      transition: transform 0.3s ease;
+      backdrop-filter: blur(5px);
+    }
+    .right.hidden {
+      transform: translateX(120%);
+    }
+    .main {
+      height: calc(100vh - 70px);
+      border-radius: 15px;
+      padding: 20px 15px;
+    }
+  }
+  /* Scrollbar genel alanı */
+::-webkit-scrollbar {
+  width: 12px;         /* Genişlik */
+}
+
+/* Scrollbar track (arkaplan) */
+::-webkit-scrollbar-track {
+  background: #e0e0e0; /* Arka plan rengi */
+  border-radius: 10px; /* Köşeleri yuvarla */
+}
+
+/* Scrollbar thumb (tutma çubuğu) */
+::-webkit-scrollbar-thumb {
+  background: #3f3a75;   /* Senin verdiğin koyu mor renk */
+  border-radius: 10px;   /* Köşeleri yuvarla */
+  border: 2px solid #e0e0e0; /* İçeride boşluk gibi görünmesi için kenar */
+}
+
+/* Hover efekti (isteğe bağlı) */
+::-webkit-scrollbar-thumb:hover {
+  background: #5b56a0;  /* Üzerine gelince daha açık mor */
+}

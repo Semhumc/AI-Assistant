@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Chat Interface</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+ .main {
+  background-color: transparent !important;
+  flex-grow: 1;
+  height: 70vh;
+  padding: 20px;
+  margin: 40px auto;
+  width: 85%;
+  max-width: 700px;
+  border-radius: 10px;
+  
+   margin-left: 400px;  /* Left sidebar genişliği + boşluk */
+  margin-right: 50px; /* Right sidebar genişliği + boşluk */
+  box-sizing: border-box;
+  transition: margin 0.3s ease;
+ 
+  
+}
+/* Responsive: Ekran 900px altı olduğunda */
+@media (max-width: 900px) {
+  .main {
+    margin-left: 0;  /* Sidebarlar gizleniyor, boşluk kaldır */
+    margin-right: 0;
+    height: calc(80vh - 70px); /* Üstteki fixed top-buttons boşluğu */
+    border-radius: 15px;
+    padding: 20px 15px;
+  }
+}
+.main h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: white;
+}
+.emp-update-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  
+  padding: 25px;
+  border-radius: 12px;
+  color: white;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.form-row label {
+  flex: 1;
+  min-width: 140px;
+  margin-right: 20px;
+  font-weight: 500;
+}
+
+.form-row input,
+.form-row select {
+  flex: 2;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 350px;
+}
+
+.update-btn {
+  align-self: center;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.update-btn:hover {
+  background-color: #45a049;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-row label {
+    margin-bottom: 5px;
+  }
+}
+
+
+
+
+  
+</style>
+</head>
+  <body>
+<!-- Üstte toggle butonları -->
+<div class="top-buttons">
+  <button id="toggleLeftBtn">☰ </button>
+  <button id="toggleRightBtn">👤 </button>
+</div>
+
+<div class="container">
+
+  <!-- LEFT - Sidebar -->
+  <nav class="left">
+    <div class="top-section">
+  <!-- Chat kutusu -->
+  <div class="chat-box">
+    <h3>Chat</h3>
+    <a href="{{ url_for('home') }}" class="chat"style="color: white;">
+      💬  <strong>New Chat</strong>
+    </a>
+  </div>
+<!-- Duyurular Kutusu -->
+  <div class="announcements-box">
+    <h3>Announcements</h3>
+    <a href="{{ url_for('announcements') }}" class="announcement"style="color: white;">
+      {% if announcements %}
+        {% set last = announcements[0] %}
+        <div class="announcement-item">
+          <div class="announcement-header">
+            <span class="icon">📢</span>
+            <strong>{{ last.sender }}</strong>
+          </div>
+          <div class="announcement-content">
+            {{ last.content }}
+          </div>
+        </div>
+      {% else %}
+        <p>No Announcements.</p>
+      {% endif %}
+    </a>
+  </div>
+  <div class="app-buttons">
+    <a href="https://mail.google.com/" target="_blank" style="display: inline-block;">
+    <img src="https://img.icons8.com/color/28/gmail-new.png" alt="Gmail" style="width: 28px; height: 28px;" />
+  </a>
+    <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
+      <img src="https://img.icons8.com/color/48/linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://www.notion.so" target="_blank" title="Notion">
+      <img src="https://img.icons8.com/ios-filled/50/000000/notion.png" alt="Notion">
+    </a>
+    <a href="https://drive.google.com" target="_blank" title="Google Drive">
+      <img src="https://img.icons8.com/color/48/google-drive--v1.png" alt="Google Drive">
+    </a>
+    <a href="https://slack.com/" target="_blank">
+    <img src="https://img.icons8.com/color/48/slack-new.png" alt="Slack" />
+  </a>
+  </div>
+  <!-- Takvim -->
+  {% include '_calendar.html' %}
+  </div>
+</nav>
+<!-- MAIN - Box alanı -->
+<div class="main">
+  <h2>Update Employee</h2>
+ <form method="POST">
+    <div class="emp-update-box">
+     
+
+      <p><strong>Username (Can't change):</strong> {{ user.username }}</p>
+
+<div class="form-row">
+  <label for="firstName">First Name</label>
+  <input type="text" id="firstName" name="firstName" value="{{ user.firstName }}" required />
+</div>
+
+<div class="form-row">
+  <label for="lastName">Last Name</label>
+  <input type="text" id="lastName" name="lastName" value="{{ user.lastName }}" required />
+</div>
+
+<div class="form-row">
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" value="{{ user.email }}" required />
+</div>
+
+<div class="form-row">
+  <label for="phoneNumber">Phone Number</label>
+  <input type="tel" id="phoneNumber" name="phoneNumber" value="{{ user.attributes.get('phoneNumber', [''])[0] }}" />
+</div>
+
+<div class="form-row">
+  <label for="department">Department</label>
+  <select name="group" id="department" required>
+    <option value="" disabled selected>Select a Department</option>
+    {% for group in groups %}
+      <option value="{{ group }}">{{ group }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="form-row">
+  <label for="role">Role</label>
+  <select name="role" id="role" required>
+    <option value="" disabled selected>Select a Role</option>
+    {% for role in roles %}
+      <option value="{{ role }}">{{ role }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<button type="submit" class="update-btn">Update</button>
+    </div>
+  </form>
+</div>
+
+     
+
+
+
+ <!-- RIGHT - Popuplar -->
+ <div class="right">
+
+  <div class="popup-toggle-container">
+    <button class="icon-button" onclick="togglePopup('notificationsPopup')">ℹ️</button>
+    <button class="icon-button" onclick="togglePopup('profilePopup')">👤</button>
+  </div>
+
+  <div id="notificationsPopup" class="popup">
+    <h4>Need Help?</h4>
+    <h5>If you have any problem you can send us email.</h5>
+    <p>ssbtech@gmail.com</p>
+  </div>
+
+  <div id="profilePopup" class="popup">
+  <div class="popup-content">
+    <div class="profile-info">
+      <span class="icon">👤</span>
+      <span class="info-text">{{ current_user.get('given_name', 'Misafir') }} {{ current_user.get('family_name', '') }}</span>
+    </div>
+    <div class="profile-info no-icon">
+      <ul class="info-text">
+        {% for group in current_user.groups %}
+          <li>{{ group }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="profile-info no-icon">
+      <span class="info-text">{{ current_user.get('email', 'Misafir') }}</span>
+    </div>
+    <form action="{{ url_for('profile') }}" method="get" style="display: block;">
+      <button type="submit" class="popup-button">See Profile</button>
+    </form>
+
+    {% if can_do_Register %}
+      <form action="{{ url_for('register') }}" method="get" style="display: block;">
+        <button type="submit" class="popup-button">Add Employee</button>
+      </form>
+      <form action="{{ url_for('all_users') }}" method="get" style="display: block;">
+        <button type="submit" class="popup-button">List of Employees</button>
+      </form>
+    {% endif %}
+    
+    <form action="{{ url_for('logout') }}" method="get" style="display: block;">
+      <button type="submit" class="popup-button logout">Logout</button>
+    </form>
+  </div>
+</div>
+
+</div>
+
+<script src="{{ url_for('static', filename='scripts/popup.js') }}"></script>
+
+</body>
+</html>

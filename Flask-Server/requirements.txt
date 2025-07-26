@@ -1,0 +1,5 @@
+Flask
+python-keycloak
+firebase-admin
+google-api-python-client
+google-auth-oauthlib

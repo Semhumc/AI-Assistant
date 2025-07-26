@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - keycloak_network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.6
+    command: start
+    environment:
+      #KC_HOSTNAME: localhost
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      #KC_HOSTNAME_PORT: "443"
+      KC_PROXY: edge
+      PROXY_ADDRESS_FORWARDING: "true"
+      KEYCLOAK_FRONTEND_URL: "https://${KC_HOSTNAME}"
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres/keycloak_db
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - postgres
+    networks:
+      - keycloak_network
+    
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: my_ngrok_keycloak_tunnel
+    #network_mode: "host"
+    stdin_open: true
+    tty: true
+    ports:
+      - "4041:4040" 
+    environment:
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
+    command:
+      - http
+      - keycloak:8080
+      - "--url=${KC_HOSTNAME}"
+    depends_on:
+      - keycloak
+    networks:
+      - keycloak_network
+    restart: unless-stopped
+  
+volumes:
+  postgres_data:
+
+networks:
+  keycloak_network:
+    driver: bridge
+    name: keycloak_network

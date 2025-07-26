@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <title>About Us</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+   body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  position: relative;
+ 
+
+  background: 
+    linear-gradient(
+      315deg,
+      rgba(217, 166, 162, 0.8) 0%,
+      rgba(165, 93, 100, 0.8) 10%,
+      rgba(109, 40, 76, 0.8) 25%,
+      rgba(63, 58, 117, 0.8) 55%,
+      rgba(16, 11, 54, 0.8) 100%
+    ),
+    url("{{ url_for('static', filename='images/arkaplan.jpg') }}"); /* <- Görselin yolunu buraya yaz */
+  
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+
+   header {
+  width: 100%;
+  padding: 20px 50px;
+  position: fixed; /* Fixed navbar */
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: rgba(16, 11, 54, 0.3); /* Arkaplan eklendi */
+  backdrop-filter: blur(10px);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: 30px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: 0.3s;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+nav a.active,
+nav a:hover {
+  background-color:#100b36;
+  color: white;
+}
+
+/* Main içeriği navbar altından başlasın */
+main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 75%;
+  margin-top: 200px;
+margin-left: auto;
+margin-right: auto;
+margin-bottom: 40px;
+
+  padding: 40px;
+  background-color: rgba(16, 11, 54, 0.8);
+  border-radius: 20px;
+  color: white;
+}
+    
+
+    .left {
+      width: 55%;
+    }
+
+    .left h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .left h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .left p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .left button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #6d284c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .right img {
+      width: 300px;
+      border-radius: 15px;
+    }
+
+   .popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px; /* Daha büyük popup */
+  background: rgba(255, 255, 255, 0.15); /* Saydam beyaz */
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(18px); /* Blur efekti */
+  -webkit-backdrop-filter: blur(18px); /* Safari desteği */
+  display: none;
+  z-index: 999;
+  color: white;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0,0,0,0.4); /* Yarı saydam arka plan */
+  backdrop-filter: blur(3px); /* Hafif blur arka plan */
+  -webkit-backdrop-filter: blur(3px);
+  display: none;
+  z-index: 998;
+}
+.popup-logo {
+  width: 300px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px auto;
+}
+/* Responsive düzen */
+@media (max-width: 768px) {
+  main {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .left, .right {
+    width: 100%;
+    text-align: center;
+  }
+
+  .right img {
+    width: 80%;
+    margin-top: 20px;
+  }
+
+  nav ul {
+    justify-content: center;
+    padding: 0;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+        <li><a class="active" href="{{ url_for('aboutus') }}">HOME</a></li>
+        <li><a href="{{ url_for('login') }}">LOGIN</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <div class="left">
+      <h1>SSB Tech</h1>
+      <h2>AI Assistant</h2>
+      <p>Our AI assistant helps streamline your daily tasks, saving you time and increasing productivity. Built with the latest advancements in machine learning.</p>
+      <button onclick="openPopup()">Contact Us</button>
+    </div>
+    <div class="right">
+      <img src="{{ url_for('static', filename='images/ll2.png') }}" alt="AI assistant image" />
+    </div>
+  </main>
+
+  <!-- Popup & Overlay -->
+  <div class="overlay" onclick="closePopup()"></div>
+  
+  <div class="popup" id="contactPopup">
+    <img src="{{ url_for('static', filename='images/ll2.png') }}" alt="Company Logo" class="popup-logo" />
+    <h2>SSB Tech</h2>
+    <p><strong>Email:</strong> ssbtech@gmail.com</p>
+    <p><strong>Phone:</strong> +90 555 123 4567</p>
+    <p><strong>Address:</strong> Istanbul, Turkey</p>
+  </div>
+
+  <script>
+    function openPopup() {
+      document.querySelector('.popup').style.display = 'block';
+      document.querySelector('.overlay').style.display = 'block';
+    }
+
+    function closePopup() {
+      document.querySelector('.popup').style.display = 'none';
+      document.querySelector('.overlay').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

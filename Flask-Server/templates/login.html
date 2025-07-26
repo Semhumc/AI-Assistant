@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(
+        315deg,
+        #d9a6a2 0%,
+        #a55d64 10%,
+        #6d284c 25%,
+        #3f3a75 55%,
+        #100b36 100%
+      );
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      padding: 20px 50px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      background-color: rgba(16, 11, 54, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: flex-end;
+      gap: 30px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: 0.3s;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    nav a.active,
+    nav a:hover {
+      background-color: #100b36;
+      color: white;
+    }
+
+    .login-container {
+      margin-top: 100px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 40px;
+      width: 640px;
+      height: 380px;
+      display: flex;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .login-left {
+      background: rgba(255, 255, 255, 0.95);
+      flex: 1;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: #100b36;
+      font-weight: 600;
+      font-size: 20px;
+      text-align: center;
+      line-height: 1.4;
+      user-select: none;
+    }
+
+    .login-left h1 {
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+
+    .login-left p {
+      font-size: 16px;
+    }
+
+    .login-right {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      flex: 1;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-left: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .login-right h2 {
+      color: #100b36;
+      margin-bottom: 25px;
+      text-align: center;
+      font-size: 22px;
+    }
+
+    /* Alert styles */
+    .alert {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .alert-error {
+      background-color: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
+      border: 1px solid #dc3545;
+    }
+    .alert-info {
+      background-color: rgba(0, 123, 255, 0.1);
+      color: #007bff;
+      border: 1px solid #007bff;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 8px;
+      border: 2px solid #100b36;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #100b36;
+      color: white;
+      border: none;
+      padding: 8px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #100b36;
+    }
+
+    .forgot-password {
+      display: inline-block;
+      margin-top: 8px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #fff;
+      text-decoration: none;
+      text-align: right;
+    }
+    .forgot-password:hover {
+      text-decoration: underline;
+      color: #100b36;
+    }
+
+    @media(max-width: 700px) {
+      .login-container {
+        width: 90%;
+        height: auto;
+        flex-direction: column;
+      }
+      .login-left,
+      .login-right {
+        flex: none;
+        width: 100%;
+        border-left: none;
+        border-bottom: 2px solid rgba(255,255,255,0.3);
+      }
+      .login-right {
+        border-bottom: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        justify-content: center;
+        padding: 0;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('aboutus') }}">HOME</a></li>
+        <li><a class="active" href="{{ url_for('login') }}">LOGIN</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="login-container">
+    <div class="login-left">
+      <h1>WELCOME!</h1>
+      <p>You can access all features by logging into your account.<br>We wish you a good day.</p>
+    </div>
+
+    <div class="login-right">
+      <h2>Login</h2>
+
+      {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+      {% endif %}
+      {% if message %}
+        <div class="alert alert-info">{{ message }}</div>
+      {% endif %}
+
+      <form method="post">
+        <label>Email:</label>
+        <input type="email" name="email" required>
+
+        <label>Password:</label>
+        <input type="password" name="password" required>
+
+        <a href="{{ url_for('forgot_password') }}" class="forgot-password">Forgot Password?</a>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+  <style>
+   *{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(
+        315deg,
+        #d9a6a2 0%,
+        #a55d64 10%,
+        #6d284c 25%,
+        #3f3a75 55%,
+        #100b36 100%
+      );
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+  width: 100%;
+  padding: 20px 50px;
+  position: fixed; /* Fixed navbar */
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: rgba(16, 11, 54, 0.3); /* Arkaplan eklendi */
+  backdrop-filter: blur(10px);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  gap: 30px;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: 0.3s;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+nav a.active,
+nav a:hover {
+  background-color:#100b36;
+  color: white;
+}
+
+.register-container {
+      margin-top: 100px;
+margin-left: auto;
+margin-right: auto;
+margin-bottom: 40px;
+      width: 700px;
+      height: 400px;
+      display: flex;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+.register-left {
+      flex: 1;
+      background-color: white;
+      padding: 30px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+.register-left h2 {
+      color: #100b36;
+      font-size: 20px;
+      line-height: 1.4;
+    }
+
+.register-right {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 20px 18px;
+      color: #333;
+      overflow-y: auto;
+    }
+
+h1 {
+      text-align: center;
+      color: #100b36;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+form {
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+.form-column {
+      flex: 1;
+      min-width: 100px;
+      display: flex;
+      flex-direction: column;
+    }
+label {
+      font-size: 12px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+
+input, select {
+      padding: 8px;
+      font-size: 12px;
+      border: 2px solid #100b36;
+      border-radius: 6px;
+      background-color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 12px;
+      width: 100%;
+    }
+
+button {
+      margin-top: 20px;
+      padding: 8px;
+      background-color: #100b36;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+
+button:hover {
+      background-color: #2a235f;
+    }
+
+
+
+
+@media (max-width: 768px) {
+  nav ul {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .register-container {
+    flex-direction: column;
+    height: auto; /* yükseklik otomatik olsun */
+    width: 90%;
+    max-width: 400px; /* daha dar ekran için max genişlik */
+    margin-top: 100px; /* navbar alt boşluk */
+  }
+
+  .register-left, .register-right {
+    flex: none; /* flex 1 iptal */
+    width: 100%;
+    padding: 20px 10px;
+    border-radius: 12px;
+  }
+
+  .register-left {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  form {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form-column {
+    width: 100%;
+    min-width: unset;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+    /* Responsive düzen */
+@media (max-width: 768px) {
+  
+  nav ul {
+    justify-content: center;
+    padding: 0;
+  }
+}
+  </style>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+        <li><a href="{{url_for('home')}}">CHAT</a></li>
+        <li><a class="active" href="#">REGISTER</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  
+    <div class="register-container">
+      
+      <!-- Sol taraf -->
+      <div class="register-left">
+        <h2>New members!<br> We are excited for new teammates</h2>
+      </div>
+
+      <!-- Sağ taraf -->
+      <div class="register-right">
+        <h1>Register</h1>
+        <form action="/register" method="post">
+          <div class="form-column">
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
+
+            <label for="firstname">First Name:</label>
+            <input type="text" name="firstname" required>
+
+            <label for="lastname">Last Name:</label>
+            <input type="text" name="lastname" required>
+
+            <label for="username">Username:</label>
+            <input type="text" name="username" required>
+          </div>
+
+          <div class="form-column">
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="text" name="phoneNumber" required>
+
+            <label for="group">Select Department:</label>
+            <select name="group" required>
+              <option value="" disabled selected>Select a Department</option>
+              {% for group in groups %}
+                <option value="{{ group }}">{{ group }}</option>
+              {% endfor %}
+            </select>
+
+            <label for="role">Select Role:</label>
+            <select name="role" required>
+              <option value="" disabled selected>Select a Role</option>
+              {% for role in roles %}
+                <option value="{{ role }}">{{ role }}</option>
+              {% endfor %}
+            </select>
+
+            <button type="submit">Register</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

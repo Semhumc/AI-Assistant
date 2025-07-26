@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Chat Interface</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style> 
+  /* MAIN - Chat alanı */
+  .main {
+  background-color: white;
+  flex-grow: 1;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  min-width: 0;
+  height: calc(90vh - 50px);
+  
+  margin-left: 370px;  /* Left sidebar genişliği + boşluk */
+  margin-right: 180px; /* Right sidebar genişliği + boşluk */
+  box-sizing: border-box;
+  transition: margin 0.3s ease;
+}
+
+/* Responsive: Ekran 900px altı olduğunda */
+@media (max-width: 900px) {
+  .main {
+    margin-left: 0;  /* Sidebarlar gizleniyor, boşluk kaldır */
+    margin-right: 0;
+    height: calc(100vh - 70px); /* Üstteki fixed top-buttons boşluğu */
+    border-radius: 15px;
+    padding: 20px 15px;
+  }
+}
+
+  .main h3 {
+    color: #100b36;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    background: #f0f0f0;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #100b36;
+    font-size: 14px;
+  }
+ .chat-msg {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 15px;
+  word-wrap: break-word;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Kullanıcı mesajı */
+.chat-msg.user{
+  align-self: flex-end;
+  background-color: #100b36;
+  color: white;
+}
+
+/* Bot mesajı */
+.chat-msg.bot {
+  align-self: flex-start;
+  background-color: #f3f3f3;
+  color: #100b36;
+}
+
+  .chat-input {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+  }
+  .chat-input textarea {
+    flex-grow: 1;
+    resize: none;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    min-height: 50px;
+    max-height: 120px;
+  }
+  .chat-input button {
+    background: #100b36;
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+  }
+  .chat-input button:hover {
+    background: #3f3a75;
+  }
+ 
+  .connect-calendar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .connect-calendar-wrapper p {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 14px;
+  }
+  .connect-calendar-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1a73e8; /* Google Blue */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  .connect-calendar-button:hover {
+    background-color: #287ae6;
+  }
+  </style>
+</head>
+
+<body>
+<!-- Üstte toggle butonları -->
+<div class="top-buttons">
+  <button id="toggleLeftBtn">☰ </button>
+  <button id="toggleRightBtn">👤 </button>
+</div>
+
+<div class="container">
+
+  <!-- LEFT - Sidebar -->
+  <nav class="left">
+    <div class="top-section">
+  
+  <!-- Duyurular Kutusu -->
+  <div class="announcements-box">
+    <h3>Announcements</h3>
+  <a href="{{ url_for('announcements') }}" class="announcement"style="color: white;">
+      {% if announcements %}
+        {% set last = announcements[0] %}
+        <div class="announcement-item">
+          <div class="announcement-header">
+            <span class="icon">📢</span>
+            <strong>{{ last.sender }}</strong>
+          </div>
+          <div class="announcement-content">
+            {{ last.content }}
+          </div>
+        </div>
+      {% else %}
+        <p>No Announcements.</p>
+      {% endif %}
+    </a>
+  </div>
+
+  <div class="app-buttons">
+    <a href="https://mail.google.com/" target="_blank" style="display: inline-block;">
+    <img src="https://img.icons8.com/color/28/gmail-new.png" alt="Gmail" style="width: 28px; height: 28px;" />
+  </a>
+    <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
+      <img src="https://img.icons8.com/color/48/linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://www.notion.so" target="_blank" title="Notion">
+      <img src="https://img.icons8.com/ios-filled/50/000000/notion.png" alt="Notion">
+    </a>
+    <a href="https://drive.google.com" target="_blank" title="Google Drive">
+      <img src="https://img.icons8.com/color/48/google-drive--v1.png" alt="Google Drive">
+    </a>
+    <a href="https://slack.com/" target="_blank">
+    <img src="https://img.icons8.com/color/48/slack-new.png" alt="Slack" />
+  </a>
+  </div>
+
+
+  {% include '_calendar.html' %}
+    </div>
+</nav>
+
+  <!-- MAIN - Chat alanı -->
+  <div class="main">  
+    <div id="chatBox" class="chat-messages">
+      <div class="chat-msg bot">🤖 Hello {{ user.get('given_name', 'Guest') }}! How can I help you?</div>
+    </div>
+    <div class="chat-input">
+      <textarea id="userInput" placeholder="Please write..."></textarea>
+      <button onclick="sendPrompt()">Send</button>
+    </div>
+  </div>
+</div>
+  <!-- RIGHT - Popuplar -->
+ <div class="right">
+
+  <div class="popup-toggle-container">
+    <button class="icon-button" onclick="togglePopup('notificationsPopup')">ℹ️</button>
+    <button class="icon-button" onclick="togglePopup('profilePopup')">👤</button>
+  </div>
+
+  <div id="notificationsPopup" class="popup">
+    <h4>Need Help?</h4>
+    <h5>If you have any problem you can send us email.</h5>
+    <p>ssbtech@gmail.com</p>
+  </div>
+
+
+  <div id="profilePopup" class="popup">
+  <div class="popup-content">
+    <div class="profile-info">
+      <span class="icon">👤</span>
+      <span class="info-text">{{ user.get('given_name', 'Guest') }} {{ user.get('family_name', '') }}</span>
+    </div>
+    <div class="profile-info no-icon">
+      <ul class="info-text">
+        {% for group in user.groups %}
+          <li>{{ group }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="profile-info no-icon">
+      <span class="info-text">{{ user.get('email', 'Misafir') }}</span>
+    </div>
+    <form action="{{ url_for('profile') }}" method="get" style="display: block;">
+      <button type="submit" class="popup-button">See Profile</button>
+    </form>
+
+    {% if can_do_Register %}
+      <form action="{{ url_for('register') }}" method="get" style="display: block;">
+        <button type="submit" class="popup-button">Add Employee</button>
+      </form>
+      <form action="{{ url_for('all_users') }}" method="get" style="display: block;">
+        <button type="submit" class="popup-button">List of Employees</button>
+      </form>
+    {% endif %}
+    
+    <form action="{{ url_for('logout') }}" method="get" style="display: block;">
+      <button type="submit" class="popup-button logout">Logout</button>
+    </form>
+  </div>
+</div>
+
+</div>
+
+
+
+ <script>
+   let currentAccessToken = null; // Variable to store the access token
+
+   async function sendPrompt() {
+        const inputEl = document.getElementById("userInput");
+        const chatBox = document.getElementById("chatBox");
+        const promptText = inputEl.value.trim();
+
+        if (!promptText) return;
+
+        // Display user message
+        const userMsg = document.createElement("div");
+        userMsg.className = "chat-msg user";
+        userMsg.textContent = promptText;
+        chatBox.appendChild(userMsg);
+
+        inputEl.value = "";
+        // Scroll to show the user's message immediately
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        try {
+            const headers = {
+                "Content-Type": "application/json"
+            };
+            // If we have a token from a previous response, use it.
+            if (currentAccessToken) {
+                headers["Authorization"] = `Bearer ${currentAccessToken}`;
+            }
+
+            const res = await fetch("{{ url_for('prompt') }}", {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify({ prompt: promptText })
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({ error: `Server error: ${res.status}` }));
+                throw new Error(errorData.error || 'An unknown error occurred.');
+            }
+
+            const data = await res.json();
+            
+            // Update the access token with the new one from the response for the next request
+            if (data.access_token) {
+                currentAccessToken = data.access_token;
+            }
+
+            const reply = data.text || "🤖 No response received.";
+
+            // Display bot message
+            const botMsg = document.createElement("div");
+            botMsg.className = "chat-msg bot";
+            
+            // Convert markdown style links `[text](url)` to HTML `<a>` tags.
+            const htmlReply = reply.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+            botMsg.innerHTML = `🤖 ${htmlReply}`;
+            chatBox.appendChild(botMsg);
+
+        } catch (err) {
+            const errorMsg = document.createElement("div");
+            errorMsg.className = "chat-msg bot";
+            errorMsg.innerHTML = `⚠️ Error connecting to server:<br>${err.message}`;
+            chatBox.appendChild(errorMsg);
+        }
+
+        // Scroll to the bottom of the chat box to show the latest message
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+   </script> 
+ 
+<script src="{{ url_for('static', filename='scripts/popup.js') }}"></script>
+
+  
+
+</body>
+</html>
